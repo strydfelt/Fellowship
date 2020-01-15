@@ -1,5 +1,3 @@
-// var mymap = L.map('mapid').setView([51.505, -0.09], 13);
-
 function setupMap() {
 
     var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
