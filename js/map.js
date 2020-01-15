@@ -33,7 +33,8 @@ function osmTiles(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         detectRetina: true,
         maxZoom: 19,
-        minZoom: 11
+        minZoom: 11,
+        attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
     });
     return basemap
 }

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 
 <head>
-    <link rel="stylesheet" href="css/my.css" />
+  <link rel="stylesheet" href="css/my.css" />
 
-    <script src="js/leaflet/leaflet.js"></script>
-    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+  <script src="js/leaflet/leaflet.js"></script>
+  <link rel="stylesheet" href="js/leaflet/leaflet.css" />
 
-    <script src="js/map.js"></script>
-    <script src="data.js"></script>
-    <script src="calc.js"></script>
-    
+  <script src="js/leaflet/plugins/leaflet.hotline.js"></script>
+
+  <script src="js/map.js"></script>
+  <script src="data.js"></script>
+  <script src="js/calc.js"></script>
 </head>
 
 <html>
@@ -20,29 +21,78 @@
       style="width: 600px; height: 400px; position: relative;"
       class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
       tabindex="0"
-    >
-    </div>
+    ></div>
 
     <script>
-        var map = setupMap();
-        
-        data.sort( (p1, p2 ) =>{ return p1.recordedTime > p2.recordedTime} )
+      var map = setupMap();
+      var locationData = {};
+      //backward compatibility due to change in data format
+      if (data.location) {
+        locationData = data.location;
+      } else {
+        locationData = data;
+      }
 
-        //plot path
-        var coords = []
-        data.forEach( location => {
-            var loc = [location.latitude, location.longitude]
-            coords.push(loc)
-        })
-        console.log(coords.length, " points captured")
+      locationData.sort((p1, p2) => {
+        return p1.recordedTime > p2.recordedTime;
+      });
 
-        // map.setView(new L.LatLng(coords[0][0], coords[0][1]), 18);
-        var bounds = new L.LatLngBounds(coords);
-        map.fitBounds(bounds)
+      //plot path
+      var coords = [];
+      locationData.forEach(location => {
+        var loc = [location.latitude, location.longitude, location.altitude];
+        coords.push(loc);
+      });
+      console.log(coords.length, " points captured");
+      // var polyline = L.polyline(coords).addTo(map);
 
-        var polyline = L.polyline(coords).addTo(map);     
+      // map.setView(new L.LatLng(coords[0][0], coords[0][1]), 18);
+      var bounds = new L.LatLngBounds(coords);
+      map.fitBounds(bounds);
+
+      // var altitudeOptions = {
+      //   weight: 2,
+      //   min: 20,
+      //   max: 80,
+      //   palette: {
+      //     0.0: "#008800",
+      //     0.5: "#ffff00",
+      //     1.0: "#ff0000"
+      //   }
+      // };
+      // var altitudeHotlineLayer = L.hotline(coords, altitudeOptions).addTo(map);
+
+      var coordWithTime = []
+      locationData.forEach(location => {
+        var loc = [location.latitude, location.longitude, location.recordedTime];
+        coordWithTime.push(loc);
+      });
+
+      var speedsFromPointToNext = calcSpeeds(coordWithTime)
+      // console.log(speedsFromPointToNext)
+
+      var min = Math.min.apply(null, speedsFromPointToNext)
+      var max = Math.max.apply(null, speedsFromPointToNext)
+
+      var plot = []
+      for(var i = 0; i < coordWithTime.length; i++){
+        var loc = coordWithTime[i]
+        plot.push([ loc[0], loc[1], speedsFromPointToNext[i] ])
+      }
+
+      var speedOptions = {
+        weight: 2,
+        min: min,
+        max: max,
+        palette: {
+          0.0: "#008800",
+          0.5: "#ffff00",
+          1.0: "#ff0000"
+        }
+      };
+      var speedHotlineLayer = L.hotline(plot, speedOptions).addTo(map);
+
 
     </script>
-    
   </body>
 </html>
