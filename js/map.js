@@ -35,9 +35,7 @@ function osmTiles(){
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         detectRetina: true,
         maxZoom: 19,
-        minZoom: 11,
-        //Do not remove this attribution
-        attribution: '<img src="https://docs.onemap.sg/maps/images/oneMap64-01.png" style="height:20px;width:20px;"/> New OneMap | Map data &copy; contributors, <a href="http://SLA.gov.sg">Singapore Land Authority</a>'
+        minZoom: 11
     });
     return basemap
 }
