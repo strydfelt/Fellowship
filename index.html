@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="css/my.css" />
+
+    <script src="js/leaflet/leaflet.js"></script>
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+
+    <script src="js/map.js"></script>
+    <script src="data.js"></script>
+    <script src="calc.js"></script>
+    
+</head>
+
+<html>
+  <body>
+    <!-- <div id="mapid"></div> -->
+    <div
+      id="mapdiv"
+      style="width: 600px; height: 400px; position: relative;"
+      class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
+      tabindex="0"
+    >
+    </div>
+
+    <script>
+        var map = setupMap();
+        
+        data.sort( (p1, p2 ) =>{ return p1.recordedTime > p2.recordedTime} )
+
+        //plot path
+        var coords = []
+        data.forEach( location => {
+            var loc = [location.latitude, location.longitude]
+            coords.push(loc)
+        })
+        console.log(coords.length, " points captured")
+
+        // map.setView(new L.LatLng(coords[0][0], coords[0][1]), 18);
+        var bounds = new L.LatLngBounds(coords);
+        map.fitBounds(bounds)
+
+        var polyline = L.polyline(coords).addTo(map);     
+
+    </script>
+    
+  </body>
+</html>
