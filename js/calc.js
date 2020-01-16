@@ -53,7 +53,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 //input is a array of coords and the time at that point
 //returns an array of speeds
 //i.e [ [x,y,t], [x1,y1,t1], [x2,y2,t2]]
-function calcSpeeds(coords){
+function calcSpeedsWGS84(coords){
     var speeds = []
     for(var i = 0; i < coords.length; i++){
         var current = coords[i]
@@ -73,7 +73,47 @@ function calcSpeeds(coords){
         var timeInSeconds = timeGapInms / 1000
 
         var speedMetresPerSecond = distanceTravelledM/timeInSeconds
+
         speeds.push(speedMetresPerSecond)
+
     }
     return speeds
+}
+
+function calcSpeedsSVY21(coords){
+    var speeds = []
+    for(var i = 0; i < coords.length; i++){
+        var current = coords[i]
+
+        var next = {};
+        if(i < coords.length - 1){
+            next = coords[i+1]
+        }
+        else{
+            next = coords[i]
+        }
+
+        var distanceTravelledM = eucDistance([current[0], current[1]], [next[0], next[1]])
+
+        if(distanceTravelledM < 0){
+            console.log("WTF")
+        }
+
+        var timeGapInms = next[2] - current[2]
+        var timeInSeconds = timeGapInms / 1000
+
+        var speedMetresPerSecond = distanceTravelledM/timeInSeconds
+
+        speeds.push(speedMetresPerSecond)
+
+    }
+    return speeds
+}
+
+// https://supunkavinda.blog/js-euclidean-distance
+function eucDistance(a, b) {
+    return a
+        .map((x, i) => Math.abs( x - b[i] ) ** 2) // square the difference
+        .reduce((sum, now) => sum + now) // sum
+        ** (1/2)
 }

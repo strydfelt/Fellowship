@@ -127,6 +127,11 @@
                     gradient = ctx.createLinearGradient(pointStart.x, pointStart.y, pointEnd.x, pointEnd.y);
                     gradientStartRGB = this.getRGBForValue(pointStart.z);
                     gradientEndRGB = this.getRGBForValue(pointEnd.z);
+
+                    if(gradientEndRGB[0] === undefined){
+                        gradientEndRGB = gradientStartRGB
+                    }
+
                     gradient.addColorStop(0, "rgb(" + gradientStartRGB.join(",") + ")");
                     gradient.addColorStop(1, "rgb(" + gradientEndRGB.join(",") + ")");
                     ctx.strokeStyle = gradient;
