@@ -9,8 +9,6 @@
   <script src="js/leaflet/plugins/hotline/leaflet.hotline.js"></script>
   <script src="js/leaflet/plugins/SnakeAnim/L.Polyline.SnakeAnim.js"></script>
 
-
-
   <script src="js/map.js"></script>
   <script src="data/data.js"></script>
 
@@ -31,8 +29,8 @@
 
 <html>
   <body>
-    <div>
-      <!-- <select id="dataset" onchange="updateDatasetUsed()">
+    <!-- <div> -->
+    <!-- <select id="dataset" onchange="updateDatasetUsed()">
         <option value="xz1GoLunch">lunch1</option>
         <option value="xz1GoLunch2">lunch2</option>
         <option value="xz1GoHome">home</option>
@@ -44,7 +42,7 @@
 
     <div
       id="mapdiv"
-      style="width: 600px; height: 500px; position: relative;"
+      style="width: 1000px; height: 1000px; position: relative;"
       class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
       tabindex="0"
     ></div>
@@ -52,28 +50,22 @@
     <div id="controls"></div>
 
     <script>
-
       var map = setupMap();
       var osm = osmTiles();
       osm.addTo(map);
 
-      map.on('overlayadd', onOverlayAdd);
+      map.on("overlayadd", onOverlayAdd);
 
-      function onOverlayAdd(e){
-        console.log(e)
-
-        try{
-          e.layer.snakeIn()
+      function onOverlayAdd(e) {
+        // console.log(e.name);
+        if (e.name === "Path") {
+          try {
+            e.layer.snakeIn();
+          } catch (err) {}
         }
-        catch(err){
-
-        }
-        // if(e.name.includes("Animated")){
-        //   e.target.snakeIn()
-        // }
       }
 
-      // var control = document.getElementById("controls");    
+      // var control = document.getElementById("controls");
       // L.Control.Watermark = L.Control.extend({
       //   options: {
       //     position: "topleft"
@@ -141,7 +133,6 @@
         addLayerWithControls(locationData);
       }
 
-
       /* data sets:
       m2GoHome
       m2GoWork
@@ -161,13 +152,11 @@
 
       // prepareData(xz1GoLunch2);
 
-
-
       // loadData(xz1GoLunch2);
 
       dataArr.forEach(dataInput => {
-        loadData(dataInput)
-      })
+        loadData(dataInput);
+      });
 
       var locationData = loadLocationData(data);
       adjustMap(locationData);

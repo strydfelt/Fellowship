@@ -38,17 +38,33 @@ function getCoordsLatLng(locationData) {
 function createLayersForData(dataVar) {
 
     var locationData = loadLocationData(dataVar)
+
     var pathLayer = createPathLayer(locationData);
-    // var animatedPathLayer = createAnimatedPathLayer(locationData);
     var speedLayer = createSpeedLayer(locationData);
     var altitudeLayer = createAltitudeLayer(locationData);
 
+    // pathLayer = L.layerGroup([pathLayer], {zIndex: 1 })
+    // pathLayer.setZIndex(1);
+
+    // speedLayer = L.layerGroup([speedLayer], {zIndex: 3 })
+    // speedLayer.setZIndex(3);
+
+    // altitudeLayer = L.layerGroup([altitudeLayer], {zIndex: 2 })
+    // altitudeLayer.setZIndex(2);    
+
     var overlayMaps = {
-        Path:  L.layerGroup([pathLayer], {zIndex: 1 }),
-        // AnimatedPath:  L.layerGroup([animatedPathLayer], {zIndex: 2 }),
-        Speed: L.layerGroup([speedLayer], {zIndex: 3 }),
-        Altitude: L.layerGroup([altitudeLayer], {zIndex: 4 })
+        Altitude: altitudeLayer,
+        Speed: speedLayer,
+        Path:  pathLayer,
     };
+
+
+    // var overlayMaps = {
+    //     Path:  L.layerGroup([pathLayer], {zIndex: 1 }),
+    //     Speed: L.layerGroup([speedLayer], {zIndex: 3 }),
+    //     Altitude: L.layerGroup([altitudeLayer], {zIndex: 2 })
+    // };
+
     return overlayMaps
 }
 
