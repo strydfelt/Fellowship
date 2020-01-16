@@ -5,7 +5,7 @@ function setupMap() {
 
     
     // var basemap = onemapTiles()
-    var basemap = osmTiles()
+    // var basemap = osmTiles()
     // var basemap = mapboxTiles()
 
     map.setMaxBounds([[1.56073, 104.1147], [1.16, 103.502]]);
