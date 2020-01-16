@@ -128,8 +128,15 @@
                     gradientStartRGB = this.getRGBForValue(pointStart.z);
                     gradientEndRGB = this.getRGBForValue(pointEnd.z);
 
+                    // console.log(i)
+                    // console.log(pointStart)
+                    // console.log(pointEnd)
+                    // console.log(gradientStartRGB)
+                    // console.log(gradientEndRGB)
+                    
                     if(gradientEndRGB[0] === undefined){
                         gradientEndRGB = gradientStartRGB
+                        console.log("patch")
                     }
 
                     gradient.addColorStop(0, "rgb(" + gradientStartRGB.join(",") + ")");

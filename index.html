@@ -6,7 +6,10 @@
   <script src="js/leaflet/leaflet-src.js"></script>
   <link rel="stylesheet" href="js/leaflet/leaflet.css" />
 
-  <script src="js/leaflet/plugins/leaflet.hotline.js"></script>
+  <script src="js/leaflet/plugins/hotline/leaflet.hotline.js"></script>
+  <script src="js/leaflet/plugins/SnakeAnim/L.Polyline.SnakeAnim.js"></script>
+
+
 
   <script src="js/map.js"></script>
   <script src="data/data.js"></script>
@@ -16,92 +19,158 @@
   <script src="data/data.xz1.going_home.js"></script>
   <script src="data/data.xz1.going_work.js"></script>
   <script src="data/data.xz1.lunch.js"></script>
+  <script src="data/data.xz1.lunch2.js"></script>
 
   <!-- <script src="data/index.js"></script> -->
 
   <script src="js/calc.js"></script>
   <script src="js/svy21.js"></script>
+  <script src="js/layers.js"></script>
   <script src="js/main.js"></script>
 </head>
 
 <html>
   <body>
-    <!-- <div id="mapid"></div> -->
+    <div>
+      <!-- <select id="dataset" onchange="updateDatasetUsed()">
+        <option value="xz1GoLunch">lunch1</option>
+        <option value="xz1GoLunch2">lunch2</option>
+        <option value="xz1GoHome">home</option>
+        <option value="m2GoHome">homeAlt</option>
+        <option value="xz1GoWork">work</option>
+        <option value="m2GoWork">workAlt</option>
+      </select>
+    </div> -->
+
     <div
       id="mapdiv"
-      style="width: 600px; height: 600px; position: relative;"
+      style="width: 600px; height: 500px; position: relative;"
       class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
       tabindex="0"
     ></div>
 
+    <div id="controls"></div>
+
     <script>
+
+      var map = setupMap();
+      var osm = osmTiles();
+      osm.addTo(map);
+
+      map.on('overlayadd', onOverlayAdd);
+
+      function onOverlayAdd(e){
+        console.log(e)
+
+        try{
+          e.layer.snakeIn()
+        }
+        catch(err){
+
+        }
+        // if(e.name.includes("Animated")){
+        //   e.target.snakeIn()
+        // }
+      }
+
+      // var control = document.getElementById("controls");    
+      // L.Control.Watermark = L.Control.extend({
+      //   options: {
+      //     position: "topleft"
+      //   },
+      //   onAdd: function(map) {
+      //     var img = L.DomUtil.create("img");
+      //     img.src = "img/logo.png";
+      //     img.style.width = "64px";
+
+      //     // L.DomEvent.on("click", ()=>{
+      //     //   console.log("hi")
+      //     // })
+
+      //     return img;
+      //   },
+
+      //   onRemove: function(map) {
+      //   // Nothing to do here
+      //   }
+      // });
+      // L.control.watermark = function(opts) {
+      //   return new L.Control.Watermark(opts);
+      // };
+
+      // L.control.watermark({ position: "bottomleft" }).addTo(map);
+
       //data prep
-      var locationData = {};
+      // var e = document.getElementById("dataset");
+      // var datasetSelected = e.options[e.selectedIndex].value;
+
+      var dataArr = [
+        m2GoHome,
+
+        //technically, this is go home + go work next day?
+        m2GoWork,
+
+        xz1GoLunch,
+        xz1GoLunch2,
+        xz1GoHome,
+        xz1GoWork
+      ];
+
+      var datasets = {
+        m2GoHome: m2GoHome,
+        m2GoWork: m2GoWork,
+        xz1GoLunch: xz1GoLunch,
+        xz1GoLunch2: xz1GoLunch2,
+        xz1GoHome: xz1GoHome,
+        xz1GoWork: xz1GoWork
+      };
+
+      function addLayerWithControls(locationData) {
+        var overlays = createLayersForData(locationData);
+        L.control.layers(null, overlays).addTo(map);
+      }
+
+      function adjustMap(locationData) {
+        var coords = getCoordsLatLng(locationData);
+        var bounds = new L.LatLngBounds(coords);
+        map.fitBounds(bounds);
+      }
+
+      function loadData(data) {
+        var locationData = loadLocationData(data);
+        addLayerWithControls(locationData);
+      }
+
 
       /* data sets:
       m2GoHome
       m2GoWork
       xz1GoLunch aka data
+      xz1GoLunch2
       xz1GoHome
       xz1GoWork
       */
-      var datasetToUse = data;
-      //backward compatibility due to change in data format
-      if (datasetToUse[0].location) {
-        locationData = datasetToUse.map(item => {
-          return item.location;
-        });
-      } else {
-        locationData = datasetToUse;
-      }
 
-      locationData.sort((p1, p2) => {
-        return p1.recordedTime > p2.recordedTime;
-      });
+      // var locationData = loadLocationData(data);
+      // var coords = getCoordsLatLng(locationData);
+      // var bounds = new L.LatLngBounds(coords);
+      // map.fitBounds(bounds);
 
-      //overlays
+      // var overlays = createLayersForData(locationData);
+      // L.control.layers(null, overlays).addTo(map);
 
-      //plot path
-      var coords = [];
-      locationData.forEach(location => {
-        var loc = [location.latitude, location.longitude];
-        coords.push(loc);
-      });
-      console.log(coords.length + " points captured");
+      // prepareData(xz1GoLunch2);
 
 
-      //map tile sets
-      var osm = osmTiles();
-      var mapbox = mapboxTiles();
-      var onemap = onemapTiles();
-      var mapTileSetLayers = [osm, mapbox, onemap];
 
-      var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
+      // loadData(xz1GoLunch2);
 
-      var mapLayers = {
-        OSM: osm,
-        MapBox: mapbox,
-        OneMap: onemap,
-      };
+      dataArr.forEach(dataInput => {
+        loadData(dataInput)
+      })
 
-      //layers
-      var pathLayer = createPathLayer(locationData);
-      var speedLayer = createSpeedLayer(locationData);
-      var altitudeLayer = createAltitudeLayer(locationData);
-
-      var overlayMaps = {
-        Path: pathLayer,
-        Speed: speedLayer,
-        Altitude: altitudeLayer
-      };      
-
-      var map = setupMap()
-      osm.addTo(map)
-
-      L.control.layers(mapLayers, overlayMaps).addTo(map);
-
-      var bounds = new L.LatLngBounds(coords);
-      map.fitBounds(bounds);
+      var locationData = loadLocationData(data);
+      adjustMap(locationData);
     </script>
   </body>
 </html>
