@@ -1,3 +1,13 @@
+function createPathLayer(locationData){
+    var coords = [];
+    locationData.forEach(location => {
+      var loc = [location.latitude, location.longitude];
+      coords.push(loc);
+    });
+    var polyline = L.polyline(coords)
+    return polyline
+}
+
 function createAltitudeLayer(locationData){
     var coordsWithAltitude = []
     locationData.forEach(location => {

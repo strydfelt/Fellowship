@@ -22,7 +22,6 @@
   <script src="js/calc.js"></script>
   <script src="js/svy21.js"></script>
   <script src="js/main.js"></script>
-
 </head>
 
 <html>
@@ -30,13 +29,13 @@
     <!-- <div id="mapid"></div> -->
     <div
       id="mapdiv"
-      style="width: 700px; height: 700px; position: relative;"
+      style="width: 600px; height: 600px; position: relative;"
       class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
       tabindex="0"
     ></div>
 
     <script>
-      var map = setupMap();
+      //data prep
       var locationData = {};
 
       /* data sets:
@@ -46,18 +45,21 @@
       xz1GoHome
       xz1GoWork
       */
-      var datasetToUse = data
+      var datasetToUse = data;
       //backward compatibility due to change in data format
       if (datasetToUse[0].location) {
-        locationData = datasetToUse.map(item => { return item.location});
+        locationData = datasetToUse.map(item => {
+          return item.location;
+        });
       } else {
         locationData = datasetToUse;
       }
 
-
       locationData.sort((p1, p2) => {
         return p1.recordedTime > p2.recordedTime;
       });
+
+      //overlays
 
       //plot path
       var coords = [];
@@ -66,17 +68,53 @@
         coords.push(loc);
       });
       console.log(coords.length + " points captured");
-      // var polyline = L.polyline(coords).addTo(map);
+
+
+      //map tile sets
+      var osm = osmTiles();
+      var mapbox = mapboxTiles();
+      var onemap = onemapTiles();
+      var mapTileSetLayers = [osm, mapbox, onemap];
+
+      var center = L.bounds([1.56073, 104.11475], [1.16, 103.502]).getCenter();
+
+      var mapLayers = {
+        OSM: osm,
+        MapBox: mapbox,
+        OneMap: onemap
+      };
+
+
+      //layers
+      var pathLayer = createPathLayer(locationData);
+      var speedLayer = createSpeedLayer(locationData);
+      var altitudeLayer = createAltitudeLayer(locationData);
+
+      var layersAvailable = [pathLayer, speedLayer, altitudeLayer];
+      var pathLayerGroup = L.layerGroup(layersAvailable);
+
+      var overlayMaps = {
+        Path: pathLayer,
+        Speed: speedLayer,
+        Altitude: altitudeLayer
+      };      
+
+      var overlayMaps = {
+        Path: pathLayer,
+        Speed: speedLayer,
+        Altitude: altitudeLayer
+      };
+
+
+      var map = L.map("mapdiv", {
+        layers: mapTileSetLayers
+      }).setView([center.x, center.y], 12);
+
+
+      L.control.layers(mapLayers, overlayMaps).addTo(map);
 
       var bounds = new L.LatLngBounds(coords);
       map.fitBounds(bounds);
-
-      var speedLayer = createSpeedLayer(locationData)
-      speedLayer.addTo(map)
-
-      // var altitudeLayer = createAltitudeLayer(locationData)
-      // altitudeLayer.addTo(map)      
-
     </script>
   </body>
 </html>
