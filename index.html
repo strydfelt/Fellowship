@@ -7,9 +7,8 @@
   <link rel="stylesheet" href="js/leaflet/leaflet.css" />
 
   <script src="js/leaflet/plugins/hotline/leaflet.hotline.js"></script>
-  <script src="js/leaflet/plugins/fullscreen/leaflet.fullscreen.js"></script>  
+  <script src="js/leaflet/plugins/fullscreen/leaflet.fullscreen.js"></script>
   <script src="js/leaflet/plugins/SnakeAnim/L.Polyline.SnakeAnim.js"></script>
-
 
   <script src="js/map.js"></script>
   <script src="data/data.js"></script>
@@ -45,7 +44,7 @@
 
     <div
       id="mapdiv"
-      style="width: 1000px; height: 1000px; position: relative;"
+      style="width: 600px; height: 600px; position: relative;"
       class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag"
       tabindex="0"
     ></div>
@@ -59,28 +58,22 @@
 
       map.on("overlayadd", onOverlayAdd);
 
-      map.on("layeradd", onLayerAdd);
-
-
       map.addControl(new L.Control.Fullscreen());
 
-      // if(!map.isFullScreen()){
-      //   map.toggleFullScreen()
-      // }
-
       function onOverlayAdd(e) {
-        console.log(e.name);
+        console.log("overlay: ", e.name);
         if (e.name === "Path") {
           try {
             e.layer.snakeIn();
           } catch (err) {
-            console.log(err)
+            console.log(err);
           }
         }
-      }
 
-      function onLayerAdd(e) {
-        console.log(e.name);
+        console.log(e.layer.dataName)
+        //toggle map view?
+        var dataUsed = locationDataDict[e.layer.dataName];
+        adjustMap(dataUsed);
       }
 
       // var control = document.getElementById("controls");
@@ -122,22 +115,30 @@
         xz1GoLunch,
         xz1GoLunch2,
         xz1GoHome,
-        xz1GoHome2,        
+        xz1GoHome2,
         xz1GoWork
       ];
 
       var datasets = {
-        m2GoHome: m2GoHome,
-        m2GoWork: m2GoWork,
-        xz1GoLunch: xz1GoLunch,
-        xz1GoLunch2: xz1GoLunch2,
-        xz1GoHome: xz1GoHome,
-        xz1GoHome2: xz1GoHome2,
-        xz1GoWork: xz1GoWork
+        // m2GoHome: m2GoHome,
+        // m2GoWork: m2GoWork,
+        Lunch1: xz1GoLunch,
+        Lunch2: xz1GoLunch2,
+        Home1: xz1GoHome,
+        Home2: xz1GoHome2,
+        Work: xz1GoWork
       };
 
-      function addLayerWithControls(locationData) {
+      var locationDataDict = {}
+
+      function addLayerWithControls(dataName, locationData) {
         var overlays = createLayersForData(locationData);
+
+        locationDataDict[dataName] = locationData
+        overlays.Altitude.dataName = dataName
+        overlays.Speed.dataName = dataName
+        overlays.Path.dataName = dataName
+
         L.control.layers(null, overlays).addTo(map);
       }
 
@@ -147,9 +148,9 @@
         map.fitBounds(bounds);
       }
 
-      function loadData(data) {
+      function loadData(dataName, data) {
         var locationData = loadLocationData(data);
-        addLayerWithControls(locationData);
+        addLayerWithControls(dataName, locationData);
       }
 
       /* data sets:
@@ -173,12 +174,19 @@
 
       // loadData(xz1GoLunch2);
 
-      dataArr.forEach(dataInput => {
-        loadData(dataInput);
-      });
+      // dataArr.forEach(dataInput => {
+      //   loadData("", dataInput);
+      // });
 
-      var locationData = loadLocationData(data);
-      adjustMap(locationData);
+      for (var key in datasets) {
+        // check if the property/key is defined in the object itself, not in parent
+        if (datasets.hasOwnProperty(key)) {
+          loadData(key, datasets[key]);
+        }
+      }
+
+      // var locationData = loadLocationData(data);
+      // adjustMap(locationData);
     </script>
   </body>
 </html>

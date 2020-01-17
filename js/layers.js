@@ -53,9 +53,11 @@ function createAltitudeLayer(locationData){
         min: 0,
         max: 100,
         palette: {
-          0.0: "#008800",
-          0.5: "#ffff00",
-          1.0: "#ff0000"
+          // 0.0: "#008800",
+          // 0.5: "#ffff00",
+          // 1.0: "#ff0000"
+          0: "#ADD8E6",
+          1.0 : "#0136D0"
         }
       };
       var altitudeHotlineLayer = L.hotline(coordsWithAltitude, altitudeOptions)
