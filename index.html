@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="js/leaflet/leaflet.css" />
 
   <script src="js/leaflet/plugins/hotline/leaflet.hotline.js"></script>
+  <script src="js/leaflet/plugins/fullscreen/leaflet.fullscreen.js"></script>  
   <script src="js/leaflet/plugins/SnakeAnim/L.Polyline.SnakeAnim.js"></script>
+
 
   <script src="js/map.js"></script>
   <script src="data/data.js"></script>
@@ -15,6 +17,7 @@
   <script src="data/data.m2.going_home.js"></script>
   <script src="data/data.m2.going_work.js"></script>
   <script src="data/data.xz1.going_home.js"></script>
+  <script src="data/data.xz1.going_home2.js"></script>
   <script src="data/data.xz1.going_work.js"></script>
   <script src="data/data.xz1.lunch.js"></script>
   <script src="data/data.xz1.lunch2.js"></script>
@@ -56,13 +59,28 @@
 
       map.on("overlayadd", onOverlayAdd);
 
+      map.on("layeradd", onLayerAdd);
+
+
+      map.addControl(new L.Control.Fullscreen());
+
+      // if(!map.isFullScreen()){
+      //   map.toggleFullScreen()
+      // }
+
       function onOverlayAdd(e) {
-        // console.log(e.name);
+        console.log(e.name);
         if (e.name === "Path") {
           try {
             e.layer.snakeIn();
-          } catch (err) {}
+          } catch (err) {
+            console.log(err)
+          }
         }
+      }
+
+      function onLayerAdd(e) {
+        console.log(e.name);
       }
 
       // var control = document.getElementById("controls");
@@ -97,14 +115,14 @@
       // var datasetSelected = e.options[e.selectedIndex].value;
 
       var dataArr = [
-        m2GoHome,
-
+        // m2GoHome,
         //technically, this is go home + go work next day?
-        m2GoWork,
+        // m2GoWork,
 
         xz1GoLunch,
         xz1GoLunch2,
         xz1GoHome,
+        xz1GoHome2,        
         xz1GoWork
       ];
 
@@ -114,6 +132,7 @@
         xz1GoLunch: xz1GoLunch,
         xz1GoLunch2: xz1GoLunch2,
         xz1GoHome: xz1GoHome,
+        xz1GoHome2: xz1GoHome2,
         xz1GoWork: xz1GoWork
       };
 

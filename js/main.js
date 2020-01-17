@@ -43,27 +43,11 @@ function createLayersForData(dataVar) {
     var speedLayer = createSpeedLayer(locationData);
     var altitudeLayer = createAltitudeLayer(locationData);
 
-    // pathLayer = L.layerGroup([pathLayer], {zIndex: 1 })
-    // pathLayer.setZIndex(1);
-
-    // speedLayer = L.layerGroup([speedLayer], {zIndex: 3 })
-    // speedLayer.setZIndex(3);
-
-    // altitudeLayer = L.layerGroup([altitudeLayer], {zIndex: 2 })
-    // altitudeLayer.setZIndex(2);    
-
     var overlayMaps = {
         Altitude: altitudeLayer,
         Speed: speedLayer,
         Path:  pathLayer,
     };
-
-
-    // var overlayMaps = {
-    //     Path:  L.layerGroup([pathLayer], {zIndex: 1 }),
-    //     Speed: L.layerGroup([speedLayer], {zIndex: 3 }),
-    //     Altitude: L.layerGroup([altitudeLayer], {zIndex: 2 })
-    // };
 
     return overlayMaps
 }
