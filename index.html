@@ -61,7 +61,7 @@
       map.addControl(new L.Control.Fullscreen());
 
       function onOverlayAdd(e) {
-        console.log("overlay: ", e.name);
+        // console.log("overlay: ", e.name);
         if (e.name === "Path") {
           try {
             e.layer.snakeIn();
@@ -122,11 +122,11 @@
       var datasets = {
         // m2GoHome: m2GoHome,
         // m2GoWork: m2GoWork,
-        Lunch1: xz1GoLunch,
-        Lunch2: xz1GoLunch2,
-        Home1: xz1GoHome,
-        Home2: xz1GoHome2,
-        Work: xz1GoWork
+        Lunch1_5s: xz1GoLunch,
+        Lunch2_90s: xz1GoLunch2,
+        Home1_90s: xz1GoHome,
+        Home2_10s: xz1GoHome2,
+        Work_90s: xz1GoWork
       };
 
       var locationDataDict = {}
