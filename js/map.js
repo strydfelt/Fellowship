@@ -20,7 +20,6 @@ function setupMap() {
 
 }
 
-
 function onemapTiles() {
     var basemap =
         L.tileLayer('https://maps-{s}.onemap.sg/v3/Original/{z}/{x}/{y}.png', {

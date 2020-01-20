@@ -18,7 +18,7 @@ function createPathLayer(locationData){
       coords.push(loc);
     });
     var pathOptions = {
-      weight: 5,
+      weight: 10,
       snakingSpeed: 200
     };
     var polyline = L.polyline(coords, pathOptions)
@@ -115,7 +115,7 @@ function createSpeedLayer(locationData){
       // console.log(max);
 
       var speedOptions = {
-        weight: 15,
+        weight: 10,
         min: 0,
         max: 2,
         outlineWidth: 1.5,
